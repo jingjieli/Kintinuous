@@ -4,7 +4,11 @@ project(Kintinuous)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}")
 
-find_package(OpenNI2 REQUIRED)
+find_package(OpenNI2)
+if (NOT OPENNI2_FOUND)
+  set(OPENNI2_INCLUDE_DIR $ENV{OPENNI2_INCLUDE})
+  set(OPENNI2_LIBRARY $ENV{OPENNI2_REDIST}/libOpenNI2.so)
+endif (NOT OPENNI2_FOUND)
 find_package(Pangolin 0.1 REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(ZLIB REQUIRED)
