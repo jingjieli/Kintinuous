@@ -105,6 +105,8 @@ bool inline TrackerInterface::process()
 
         uint64_t duration = Stopwatch::getCurrentSystemTime() - start;
 
+        //std::cout << threadIdentifier << " uses " << duration / 1000.0 << " ms" << std::endl;
+
         if(threadPack.limit.getValue() && duration < 33333)
         {
             int sleepTime = std::max(int(33333 - duration), 0);

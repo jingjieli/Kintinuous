@@ -860,7 +860,7 @@ void KintinuousTracker::processFrame(const DeviceArray2D<unsigned short>& depth_
     {
         mutexOutLiveImage();
     }
-
+    TICK("integrateTsdfVolume");
     integrateTsdfVolume (depth_raw,
                          intr,
                          device_volume_size,
@@ -874,9 +874,9 @@ void KintinuousTracker::processFrame(const DeviceArray2D<unsigned short>& depth_
                          colors,
                          nmaps_curr_[0],
                          !ConfigArgs::get().disableColorAngleWeight);
-
+    TOCK("integrateTsdfVolume");
     vWrapCopyUpdate();
-
+   
     raycast(intr,
             device_Rcurr,
             device_tcurr,
@@ -888,7 +888,7 @@ void KintinuousTracker::processFrame(const DeviceArray2D<unsigned short>& depth_
             vWrapCopy,
             vmap_curr_color,
             color_volume_->data());
-
+   
     if(icp || ConfigArgs::get().useRGBDICP)
     {
         for (int i = 1; i < ICPOdometry::LEVELS; ++i)

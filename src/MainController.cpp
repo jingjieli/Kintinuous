@@ -178,6 +178,8 @@ int MainController::mainLoop()
         delete liveRead;
     }
 
+    Stopwatch::get().printAll();
+
     return 0;
 }
 

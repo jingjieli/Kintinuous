@@ -71,16 +71,18 @@ bool inline PlaceRecognition::process()
         cv::cvtColor(*newImage, *imageGray, CV_RGB2GRAY);
 
         DLoopDetector::DetectionResult result;
-
+        TICK("detectSURF");
         dbowInterface->detectSURF(*imageGray,
                                   threadPack.tracker->placeRecognitionBuffer[latestProcessedFrame].descriptor,
                                   threadPack.tracker->placeRecognitionBuffer[latestProcessedFrame].keyPoints);
-
+        TOCK("detectSURF");
         result = dbowInterface->detectLoop();
 
         if(result.detection())
         {
+            TICK("processLoopClosureDetection");
             processLoopClosureDetection(result.match);
+            TOCK("processLoopClosureDetection");
         }
         latestProcessedFrame++;
 
@@ -130,7 +132,7 @@ void PlaceRecognition::processLoopClosureDetection(int matchId)
 
     //For new image
     threadPack.tracker->placeRecognitionBuffer[latestProcessedFrame].decompressDepthTo(depthMapNew->data);
-
+    TICK("matchSURF");
     Surf3DTools::Surf3DImage *  image3DSurfOne = Surf3DTools::calculate3dPointsSURF(depthCamera,
                                                                                     depthMapNew,
                                                                                     threadPack.tracker->placeRecognitionBuffer[latestProcessedFrame].descriptor,
@@ -146,7 +148,7 @@ void PlaceRecognition::processLoopClosureDetection(int matchId)
                                                                                     threadPack.tracker->placeRecognitionBuffer[matchId].keyPoints);
 
     Surf3DTools::surfMatch3D(image3DSurfOne, image3DSurfTwo, matches1, matches2);
-
+    TOCK("matchSURF");
     assert(matches1.size() == matches2.size());
 
     if(matches1.size() < 40)

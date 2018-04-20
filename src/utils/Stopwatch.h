@@ -100,7 +100,23 @@ class Stopwatch
         {
             for(std::unordered_map<std::string, float>::const_iterator it = timings.begin(); it != timings.end(); it++)
             {
-                std::cout << it->first << ": " << it->second  << "ms" << std::endl;
+                std::cout << "Current " << it->first << " uses " << it->second  << "ms" << std::endl;
+            }
+
+            std::cout << std::endl;
+
+            for(std::unordered_map<std::string, unsigned int>::const_iterator it = times_called.begin(); it != times_called.end(); it++)
+            {
+                std::cout << it->first << " called " << it->second  << " times" << std::endl;
+            }
+
+            std::cout << std::endl;
+
+            for(std::unordered_map<std::string, float>::const_iterator it = times_total.begin(); it != times_total.end(); it++)
+            {
+                std::cout << it->first << " uses " << it->second  << " ms in total" << std::endl;
+                float time_avg = it->second / times_called.at(it->first);
+                std::cout << it->first << " uses " << time_avg  << " ms on average" << std::endl;
             }
 
             std::cout << std::endl;
@@ -148,6 +164,8 @@ class Stopwatch
             if(duration > 0)
             {
                 timings[name] = duration;
+                times_called[name] += 1;
+                times_total[name] += duration;
             }
         }
 
@@ -205,6 +223,8 @@ class Stopwatch
         struct sockaddr_in servaddr;
         std::unordered_map<std::string, float> timings;
         std::unordered_map<std::string, uint64_t> tickTimings;
+        std::unordered_map<std::string, unsigned int> times_called;
+        std::unordered_map<std::string, float> times_total;
 };
 
 #endif /* STOPWATCH_H_ */
