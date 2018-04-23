@@ -1,3 +1,30 @@
+# Apr. 23, 2018 Update: Run on NVIDIA Jetson TX 1#
+
+A few things you may need to do to build on Jetson TX 1:
+
+* '-msse' options in CMake file is not supported by ARM
+
+* Device not found at runtime, exception at "tsdf_volume.cu": try to add arch 53, 60, 61
+
+* libproj.so not found: apt install libproj-dev
+
+* internal compiler error: don't make with -j
+
+* iSAM lib undefined reference to isam::pose3d::dim: hardcode dim in cpp or create a pose3d.cpp:
+
+    #include <isam/Pose3d.h>
+
+    namespace isam
+    {
+      const int Pose3d::dim;
+    }
+
+* undefined reference to "drmxxxx": 
+
+    cd /usr/lib/aarch64-linux-gnu/libGL.so
+    sudo rm libGL.so
+    sudo ln -s /usr/lib/aarch64-linux-gnu/tegra/libGL.so libGL.so
+
 # Kintinuous #
 
 Real-time dense visual SLAM system capable of producing high quality globally consistent point and mesh reconstructions over hundreds of metres in real-time with only a low-cost commodity RGB-D sensor.
